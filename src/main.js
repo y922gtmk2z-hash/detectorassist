@@ -4,7 +4,12 @@ import '@fontsource/instrument-sans/latin-700.css';
 import '@fontsource/jetbrains-mono/latin-400.css';
 import './styles.css';
 
-import { initTabs, showScreen } from './router.js';
+import { initMap, refreshSize } from './map.js';
+import { initTabs, onScreenChange, showScreen } from './router.js';
+import { initLocate } from './spotcard.js';
 
 initTabs();
+initMap();
+initLocate();
+onScreenChange(refreshSize);
 showScreen('map');

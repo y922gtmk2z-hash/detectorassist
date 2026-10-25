@@ -51,8 +51,13 @@ button { cursor: pointer; }
 
 #screens { position: relative; flex: 1; min-height: 0; }
 .screen { position: absolute; inset: 0; overflow: auto; }
-#screen-map { overflow: hidden; }
+#screen-map { overflow: hidden; display: flex; flex-direction: column; }
+#map-wrap { position: relative; flex: 1; min-height: 0; }
 #map { position: absolute; inset: 0; background: var(--paper-2); }
+
+/* Chrome that belongs to only one of the two map screens. */
+body:not([data-screen='map']) [data-for='map'],
+body:not([data-screen='imagery']) [data-for='imagery'] { display: none !important; }
 
 .screen-header {
   position: sticky;
@@ -136,3 +141,50 @@ button { cursor: pointer; }
   white-space: normal;
 }
 .leaflet-container .leaflet-control-attribution a { color: var(--moss); }
+
+.icon-btn.flat { box-shadow: none; border-color: transparent; }
+
+.map-side {
+  position: absolute;
+  right: 12px;
+  bottom: 40px;
+  z-index: 500;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Pin */
+.pin { background: none; border: 0; }
+.pin svg { display: block; filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.35)); }
+
+/* Selected spot card: sits below the map so it never covers attribution. */
+.card {
+  padding: 14px 16px 16px;
+  background: var(--paper);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -4px 14px rgb(18 33 26 / 0.12);
+}
+.card-head { display: flex; justify-content: space-between; gap: 8px; }
+.card-title { margin: 0; font-size: 1.15rem; }
+.card-grid { margin: 4px 0 0; font-size: 1.05rem; color: var(--moss); font-weight: 400; }
+.card-ll { margin: 2px 0 0; color: var(--ink-2); }
+.card-layers { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 0.8rem; color: var(--ink-2); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.chips li { padding: 2px 8px; border-radius: 999px; background: var(--moss-soft); color: var(--moss); font-weight: 600; }
+.card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+
+#toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--tabbar-h) + var(--safe-b) + 16px);
+  z-index: 2000;
+  transform: translateX(-50%);
+  max-width: calc(100vw - 32px);
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 0.9rem;
+  box-shadow: var(--shadow);
+}
