@@ -8,6 +8,7 @@ import { initImagery } from './imagery.js';
 import { initMap, refreshSize } from './map.js';
 import { initTabs, onScreenChange, showScreen } from './router.js';
 import { initSearch } from './search.js';
+import { initSpots } from './spots.js';
 import { initLocate } from './spotcard.js';
 
 initTabs();
@@ -15,5 +16,6 @@ initMap();
 initLocate();
 initSearch();
 initImagery();
+initSpots();
 onScreenChange(refreshSize);
 showScreen('map');

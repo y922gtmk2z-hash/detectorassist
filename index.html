@@ -80,7 +80,16 @@
         </section>
 
         <section id="screen-spots" class="screen" data-screen="spots" hidden>
-          <header class="screen-header"><h1>Saved spots</h1></header>
+          <header class="screen-header spots-header">
+            <h1>Saved spots</h1>
+            <p class="spots-note">Stored on this device only. Clearing your browser data deletes them.</p>
+            <div class="filters" role="group" aria-label="Filter by permission">
+              <button type="button" class="filter" data-filter="all" aria-pressed="true">All</button>
+              <button type="button" class="filter" data-filter="granted" aria-pressed="false">Permission granted</button>
+              <button type="button" class="filter" data-filter="ask" aria-pressed="false">Ask landowner</button>
+            </div>
+          </header>
+          <ul id="spots-list" class="spots"></ul>
         </section>
       </main>
 
@@ -99,6 +108,27 @@
         </button>
       </nav>
       <div id="toast" role="status" hidden></div>
+
+      <dialog id="save-dialog" class="sheet" aria-labelledby="save-title">
+        <form id="save-form" method="dialog">
+          <h2 id="save-title">Save spot</h2>
+          <p id="save-grid" class="mono save-grid"></p>
+          <label class="field">
+            <span>Name</span>
+            <input name="name" type="text" maxlength="80" placeholder="e.g. Top field by the oak" />
+          </label>
+          <fieldset class="field">
+            <legend>Permission</legend>
+            <label class="radio"><input type="radio" name="permission" value="ask" checked /> Ask landowner</label>
+            <label class="radio"><input type="radio" name="permission" value="granted" /> Permission granted</label>
+          </fieldset>
+          <p class="sheet-note">Saved on this device only. Nothing is uploaded.</p>
+          <div class="sheet-actions">
+            <button type="submit" class="btn" value="cancel" formnovalidate>Cancel</button>
+            <button type="submit" class="btn btn-primary" value="save">Save</button>
+          </div>
+        </form>
+      </dialog>
     </div>
     <script type="module" src="/src/main.js"></script>
   </body>
