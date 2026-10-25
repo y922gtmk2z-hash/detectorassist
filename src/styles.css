@@ -498,7 +498,21 @@ body[data-drawing] .heritage-hint { display: none !important; }
   background: var(--paper);
   box-shadow: var(--shadow);
 }
-.draw-bar p { margin: 0 0 10px; font-weight: 600; }
+.draw-bar p { margin: 0 0 8px; font-weight: 600; }
+.draw-bar .draw-hint { margin-top: -4px; font-weight: 400; font-size: 0.82rem; color: var(--ink-2); }
+.draw-bar .draw-hint:empty { display: none; }
+.draw-modes { margin-bottom: 10px; padding: 3px; }
+.draw-modes .seg { min-height: 34px; font-size: 0.85rem; }
+.vertex-handle { border: 3px solid var(--ink); border-radius: 50%; background: var(--amber); box-shadow: var(--shadow); }
+.mid-handle {
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.9);
+  color: var(--ink);
+  font: 700 15px/1 var(--font-sans);
+}
 .draw-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .draw-bar .danger-link { margin-top: 6px; }
 .spot-icons { display: flex; }

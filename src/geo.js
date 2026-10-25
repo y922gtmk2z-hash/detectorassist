@@ -53,3 +53,55 @@ export function formatDistance(m) {
 export function metresPerPixel(lat, zoom) {
   return (40075016.686 * Math.cos(rad(lat))) / 2 ** (zoom + 8);
 }
+
+/**
+ * Douglas-Peucker simplification of a [lat, lng] path, tolerance in metres
+ * (measured on the OS grid). Keeps the first and last points.
+ */
+export function simplifyPath(points, toleranceM) {
+  if (points.length < 3) return points.slice();
+  const en = points.map(([lat, lng]) => latLngToEN(lat, lng));
+  const keep = new Uint8Array(points.length);
+  keep[0] = keep[points.length - 1] = 1;
+  const stack = [[0, points.length - 1]];
+  while (stack.length) {
+    const [a, b] = stack.pop();
+    const { e: x1, n: y1 } = en[a];
+    const { e: x2, n: y2 } = en[b];
+    const len = Math.hypot(x2 - x1, y2 - y1);
+    let worst = -1;
+    let idx = -1;
+    for (let i = a + 1; i < b; i++) {
+      const { e: x, n: y } = en[i];
+      const d = len ? Math.abs((y2 - y1) * x - (x2 - x1) * y + x2 * y1 - y2 * x1) / len : Math.hypot(x - x1, y - y1);
+      if (d > worst) {
+        worst = d;
+        idx = i;
+      }
+    }
+    if (worst > toleranceM) {
+      keep[idx] = 1;
+      stack.push([a, idx], [idx, b]);
+    }
+  }
+  return points.filter((_, i) => keep[i]);
+}
+
+function segmentsCross([a, b], [c, d]) {
+  const orient = (p, q, r) => Math.sign((q[1] - p[1]) * (r[0] - p[0]) - (q[0] - p[0]) * (r[1] - p[1]));
+  return orient(a, b, c) !== orient(a, b, d) && orient(c, d, a) !== orient(c, d, b) && orient(a, b, c) && orient(c, d, a);
+}
+
+/** True if any two non-neighbouring edges of the closed ring cross. */
+export function selfIntersects(ring) {
+  const n = ring.length;
+  if (n < 4) return false;
+  for (let i = 0; i < n; i++) {
+    const s1 = [ring[i], ring[(i + 1) % n]];
+    for (let j = i + 2; j < n; j++) {
+      if (i === 0 && j === n - 1) continue; // shares the closing vertex
+      if (segmentsCross(s1, [ring[j], ring[(j + 1) % n]])) return true;
+    }
+  }
+  return false;
+}

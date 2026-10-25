@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { enToLatLng } from './gridref.js';
-import { areaHa, distanceM, formatArea, formatDistance, pathLengthM, pointInPolygon } from './geo.js';
+import { areaHa, distanceM, formatArea, formatDistance, pathLengthM, pointInPolygon, selfIntersects, simplifyPath } from './geo.js';
 
 // A 200 m x 100 m rectangle on the National Grid near Avebury: 2 ha.
 const corners = [
@@ -39,5 +39,32 @@ describe('geo', () => {
     expect(formatArea(12.3)).toBe('12 ha (30 acres)');
     expect(formatDistance(420)).toBe('420 m');
     expect(formatDistance(1234)).toBe('1.23 km');
+  });
+});
+
+describe('simplifyPath', () => {
+  it('drops points within tolerance and keeps real corners', () => {
+    const ll = (e, n) => {
+      const p = enToLatLng(e, n);
+      return [p.lat, p.lng];
+    };
+    // A straight 100 m line with 0.3 m wobble, then a right-angle turn.
+    const path = [];
+    for (let i = 0; i <= 100; i += 5) path.push(ll(410000 + i, 169000 + (i % 10 ? 0.3 : 0)));
+    path.push(ll(410100, 169100));
+    const out = simplifyPath(path, 1);
+    expect(out).toHaveLength(3);
+    expect(out[0]).toEqual(path[0]);
+    expect(out.at(-1)).toEqual(path.at(-1));
+  });
+});
+
+describe('selfIntersects', () => {
+  it('spots a bow-tie but not a plain or concave shape', () => {
+    expect(selfIntersects(corners)).toBe(false);
+    expect(selfIntersects([corners[0], corners[2], corners[1], corners[3]])).toBe(true);
+    // L-shaped (concave) field
+    const L = [[0, 0], [0, 2], [1, 2], [1, 1], [2, 1], [2, 0]];
+    expect(selfIntersects(L)).toBe(false);
   });
 });

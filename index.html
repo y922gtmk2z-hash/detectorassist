@@ -31,7 +31,13 @@
               <button type="button" class="btn btn-accent" data-act="save-spot">Save spot</button>
             </div>
             <div id="draw-bar" class="draw-bar" hidden>
+              <div class="segmented draw-modes" role="radiogroup" aria-label="How to draw">
+                <button type="button" role="radio" class="seg" data-draw-mode="tap">Tap corners</button>
+                <button type="button" role="radio" class="seg" data-draw-mode="freehand">Freehand</button>
+                <button type="button" role="radio" class="seg" data-draw-mode="walk">Walk it</button>
+              </div>
               <p id="draw-info" role="status"></p>
+              <p id="draw-hint" class="draw-hint"></p>
               <div class="draw-actions">
                 <button type="button" id="draw-undo" class="btn">Undo</button>
                 <button type="button" id="draw-cancel" class="btn">Cancel</button>
