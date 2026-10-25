@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildLink, parseLink } from './link.js';
+import { buildLink, nlsViewerLink, parseLink } from './link.js';
 
 describe('share links', () => {
   it('round-trips a named pin', () => {
@@ -18,5 +18,13 @@ describe('share links', () => {
     expect(parseLink('#pin=abc,1')).toBeNull();
     expect(parseLink('#pin=95,1')).toBeNull();
     expect(parseLink('#pin=,')).toBeNull();
+  });
+});
+
+describe('nlsViewerLink', () => {
+  it('builds a viewer link with a clamped zoom', () => {
+    expect(nlsViewerLink('https://maps.nls.uk/geo/explore/side-by-side/', { lat: 51.415881, lng: -1.856872 }, 19)).toBe(
+      'https://maps.nls.uk/geo/explore/side-by-side/#zoom=18.0&lat=51.41588&lon=-1.85687',
+    );
   });
 });

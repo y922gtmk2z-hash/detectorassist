@@ -80,7 +80,8 @@ export const LAYERS = [
     tip: 'lost buildings, old tracks, wells, ponds and vanished field boundaries.',
     source: 'National Library of Scotland, OS maps c. 1888–1913',
     disabled: !MAPTILER_KEY,
-    disabledReason: 'Historic maps need a MapTiler key at build time. See README.',
+    // Without a key, the Historic button opens the free NLS viewer instead.
+    disabledReason: 'Opens the National Library of Scotland historic map viewer in a new tab.',
   },
 ];
 
@@ -108,3 +109,7 @@ export const NHLE_ATTRIBUTION =
   `Heritage: © <a href="https://historicengland.org.uk/listing/the-list/" target="_blank" rel="noopener">Historic England</a> ${year}. ` +
   `Contains Ordnance Survey data © Crown copyright and database right ${year}. ` +
   '<a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="noopener">OGL v3.0</a>';
+
+// National Library of Scotland side-by-side viewer (historic OS maps beside
+// a modern map). Linked to, not embedded, so no key or tile licence needed.
+export const NLS_VIEWER_URL = 'https://maps.nls.uk/geo/explore/side-by-side/';

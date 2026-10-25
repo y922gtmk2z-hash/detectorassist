@@ -27,3 +27,9 @@ export function buildLink({ pin, at, zoom, name }) {
   if (pin && name) q.set('n', name);
   return `#${q.toString()}`;
 }
+
+/** Link to the NLS historic map viewer at a place (its hash parameters). */
+export function nlsViewerLink(base, { lat, lng }, zoom) {
+  const z = Math.min(18, Math.max(7, Math.round(zoom)));
+  return `${base}#zoom=${z}.0&lat=${lat.toFixed(5)}&lon=${lng.toFixed(5)}`;
+}

@@ -318,7 +318,7 @@ body:not([data-screen='imagery']) [data-for='imagery'] { display: none !importan
   color: var(--ink-2);
 }
 .seg[aria-checked='true'] { background: var(--moss); color: #fff; }
-.seg[aria-disabled='true'] { color: #8a948f; text-decoration: line-through; }
+.seg[aria-disabled='true'] { color: var(--ink-2); }
 .blend-row { display: grid; grid-template-columns: auto 1fr 3.2em; align-items: center; gap: 10px; margin-top: 12px; font-size: 0.9rem; font-weight: 600; }
 .blend-row input { width: 100%; accent-color: var(--moss); }
 .blend-row output { text-align: right; }
@@ -530,3 +530,18 @@ body[data-drawing] .heritage-hint { display: none !important; }
 .variant-row .seg { min-height: 34px; font-size: 0.88rem; }
 
 .card-head-btns { display: flex; align-items: flex-start; }
+
+.ext-link {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 8px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--moss);
+  border-radius: 10px;
+  color: var(--moss);
+  font-weight: 700;
+  text-decoration: none;
+}
+.ext-src { font-weight: 400; font-size: 0.8rem; color: var(--ink-2); }

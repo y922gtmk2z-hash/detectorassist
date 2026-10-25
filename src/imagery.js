@@ -1,6 +1,7 @@
 // Imagery viewer: layer switcher, blend slider, "Look for" tip, source line.
-import { BLEND_LAYER_ID, DEFAULT_IMAGERY_LAYER_ID, LAYERS, MAP_LAYER_ID } from './config.js';
-import { getBaseLayerId, getMap, getSelected, goTo, layerDef, onBaseLayerChange, setBaseLayer, setBlend } from './map.js';
+import { BLEND_LAYER_ID, DEFAULT_IMAGERY_LAYER_ID, LAYERS, MAP_LAYER_ID, NLS_VIEWER_URL } from './config.js';
+import { nlsViewerLink } from './link.js';
+import { getBaseLayerId, getMap, getSelected, goTo, layerDef, onBaseLayerChange, onSelect, setBaseLayer, setBlend } from './map.js';
 import { onScreenChange, showScreen } from './router.js';
 import { $, esc, toast } from './ui.js';
 
@@ -12,6 +13,17 @@ const tip = $('#imagery-tip');
 const source = $('#imagery-source');
 const zoomHint = $('#zoom-hint');
 const variantRow = $('#variant-row');
+const nlsLink = $('#nls-link');
+
+/** NLS viewer at the pin, or the middle of the map if there is no pin. */
+function nlsUrl() {
+  const map = getMap();
+  return nlsViewerLink(NLS_VIEWER_URL, getSelected() ?? map.getCenter(), map.getZoom());
+}
+
+function updateNlsLink() {
+  nlsLink.href = nlsUrl();
+}
 
 // Top-level id for a layer (a variant's parent).
 const groupOf = (id) => layerDef(id)?.variantOf ?? id;
@@ -23,7 +35,7 @@ function renderSwitcher() {
   switcher.innerHTML = LAYERS.filter((l) => !l.variantOf).map(
     (l) => `<button type="button" role="radio" class="seg" data-layer="${esc(l.id)}"
         aria-checked="${l.id === groupOf(imageryLayerId)}" ${l.disabled ? 'aria-disabled="true"' : ''}
-        title="${esc(l.disabled ? l.disabledReason : l.label)}">${esc(l.label)}</button>`,
+        title="${esc(l.disabled ? l.disabledReason : l.label)}">${esc(l.label)}${l.disabled ? ' ↗' : ''}</button>`,
   ).join('');
 }
 
@@ -49,7 +61,12 @@ function updateZoomHint() {
 
 async function choose(id) {
   const def = layerDef(id);
-  if (def.disabled) return toast(def.disabledReason);
+  if (def.disabled) {
+    // Historic without a key: hand off to the free NLS viewer.
+    if (def.id === 'historic') window.open(nlsUrl(), '_blank', 'noopener');
+    else toast(def.disabledReason);
+    return;
+  }
   imageryLayerId = id;
   try {
     await setBaseLayer(id);
@@ -89,6 +106,9 @@ export function initImagery() {
     if (document.body.dataset.screen === 'imagery') renderInfo(id);
   });
   getMap().on('zoomend', updateZoomHint);
+  getMap().on('moveend', updateNlsLink);
+  onSelect(updateNlsLink);
+  updateNlsLink();
 
   onScreenChange((screen) => {
     if (screen === 'imagery') {
