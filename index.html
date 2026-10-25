@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#1E4D3B" />
+    <!-- Tile and geocoding servers identify the app by its Referer origin. -->
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="description" content="Free map for metal detectorists in England: street, LiDAR and historic maps, OS grid refs and heritage warnings." />
+    <title>Detectorist Map</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <div id="app">
+      <main id="screens">
+        <!-- Map + Imagery share one Leaflet map; the chrome around it changes. -->
+        <section id="screen-map" class="screen" data-screen="map imagery">
+          <div id="map-wrap">
+            <div id="map" aria-label="Map. Tap to drop a pin."></div>
+            <div class="map-top" data-for="map">
+              <button type="button" class="searchbar" data-act="search">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+                <span>Address, postcode or grid ref</span>
+              </button>
+            </div>
+            <div class="map-top imagery-top" data-for="imagery">
+              <button type="button" id="imagery-back" class="icon-btn" aria-label="Back to map">
+                <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+              </button>
+              <h1 class="imagery-title">Imagery</h1>
+              <button type="button" class="btn btn-accent" data-act="save-spot">Save spot</button>
+            </div>
+            <button type="button" id="zoom-hint" class="zoom-hint" data-for="imagery" hidden>Zoom in to see this layer</button>
+            <button type="button" id="heritage-hint" class="heritage-hint" hidden>Zoom in to see heritage sites</button>
+            <div class="map-side">
+              <div class="zoom-btns" data-for="imagery">
+                <button type="button" id="zoom-in" class="icon-btn" aria-label="Zoom in">
+                  <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+                </button>
+                <button type="button" id="zoom-out" class="icon-btn" aria-label="Zoom out">
+                  <svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg>
+                </button>
+              </div>
+              <button type="button" class="icon-btn" data-act="heritage" aria-pressed="true" aria-label="Heritage overlay (Scheduled Monuments and listed sites)">
+                <svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V10m14 11V10M9 21v-7m6 7v-7M3 10l9-6 9 6z"/></svg>
+              </button>
+              <button type="button" class="icon-btn" data-act="locate" aria-label="Use my location">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/></svg>
+              </button>
+            </div>
+          </div>
+          <div id="spot-card" class="card" data-for="map" aria-live="polite" hidden></div>
+          <div id="imagery-panel" class="card" data-for="imagery">
+            <div id="layer-switcher" class="segmented" role="radiogroup" aria-label="Imagery layer"></div>
+            <div id="blend-row" class="blend-row">
+              <label id="blend-label" for="blend">Blend with street</label>
+              <input id="blend" type="range" min="0" max="100" step="5" value="0" />
+              <output id="blend-value" for="blend" class="mono">0%</output>
+            </div>
+            <p id="imagery-tip" class="imagery-tip"></p>
+            <p id="imagery-source" class="imagery-source"></p>
+          </div>
+        </section>
+
+        <section id="screen-search" class="screen" data-screen="search" hidden>
+          <form id="search-form" class="search-head" role="search" autocomplete="off">
+            <button type="button" id="search-back" class="icon-btn flat" aria-label="Back to map">
+              <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>
+            </button>
+            <label class="visually-hidden" for="search-input">Address, postcode or OS grid ref</label>
+            <input id="search-input" type="search" enterkeyhint="search" spellcheck="false"
+                   placeholder="e.g. SU 123 456, OX1 2JD, Avebury" />
+          </form>
+          <div class="search-shortcuts">
+            <button type="button" id="search-locate" class="btn">Use my location</button>
+            <button type="button" id="search-pick" class="btn">Pick on map</button>
+          </div>
+          <p id="search-status" class="search-status" role="status"></p>
+          <ul id="search-results" class="results"></ul>
+          <p class="search-foot">
+            Grid refs and coordinates are converted on this device. Address search by
+            <a href="https://nominatim.openstreetmap.org/" target="_blank" rel="noopener">Nominatim</a>,
+            data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors.
+            England only.
+          </p>
+        </section>
+
+        <section id="screen-spots" class="screen" data-screen="spots" hidden>
+          <header class="screen-header spots-header">
+            <h1>Saved spots</h1>
+            <p class="spots-note">Stored on this device only. Clearing your browser data deletes them.</p>
+            <div class="filters" role="group" aria-label="Filter by permission">
+              <button type="button" class="filter" data-filter="all" aria-pressed="true">All</button>
+              <button type="button" class="filter" data-filter="granted" aria-pressed="false">Permission granted</button>
+              <button type="button" class="filter" data-filter="ask" aria-pressed="false">Ask landowner</button>
+            </div>
+          </header>
+          <ul id="spots-list" class="spots"></ul>
+          <p class="spots-foot"><button type="button" class="linklike" data-act="disclaimer">Responsible detecting</button></p>
+        </section>
+      </main>
+
+      <nav class="tabbar" aria-label="Main">
+        <button type="button" class="tab" data-tab="map" aria-current="page">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Zm0 0v14m6-12v14" /></svg>
+          <span>Map</span>
+        </button>
+        <button type="button" class="tab" data-tab="imagery">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5" /></svg>
+          <span>Imagery</span>
+        </button>
+        <button type="button" class="tab" data-tab="spots">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Zm0-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" /></svg>
+          <span>Spots</span>
+        </button>
+      </nav>
+      <div id="toast" role="status" hidden></div>
+
+      <dialog id="disclaimer" class="sheet disclaimer" aria-labelledby="disclaimer-title">
+        <form method="dialog">
+          <h2 id="disclaimer-title">Before you go detecting</h2>
+          <ul class="disclaimer-list">
+            <li><strong>Always get the landowner’s permission</strong> before you detect, on every field.</li>
+            <li>Follow the <strong>Code of Practice for Responsible Metal Detecting in England and Wales</strong>.</li>
+            <li><strong>Record your finds</strong> with the
+              <a href="https://finds.org.uk/" target="_blank" rel="noopener">Portable Antiquities Scheme</a>.</li>
+          </ul>
+          <p class="sheet-note">
+            This app is a map, not legal advice. Map and heritage data can be incomplete or out of date.
+            Saved spots stay on this device; nothing is uploaded and nothing is tracked.
+          </p>
+          <button type="submit" class="btn btn-primary btn-block" autofocus>I understand</button>
+        </form>
+      </dialog>
+
+      <dialog id="save-dialog" class="sheet" aria-labelledby="save-title">
+        <form id="save-form" method="dialog">
+          <h2 id="save-title">Save spot</h2>
+          <p id="save-grid" class="mono save-grid"></p>
+          <label class="field">
+            <span>Name</span>
+            <input name="name" type="text" maxlength="80" placeholder="e.g. Top field by the oak" />
+          </label>
+          <fieldset class="field">
+            <legend>Permission</legend>
+            <label class="radio"><input type="radio" name="permission" value="ask" checked /> Ask landowner</label>
+            <label class="radio"><input type="radio" name="permission" value="granted" /> Permission granted</label>
+          </fieldset>
+          <p class="sheet-note">Saved on this device only. Nothing is uploaded.</p>
+          <div class="sheet-actions">
+            <button type="submit" class="btn" value="cancel" formnovalidate>Cancel</button>
+            <button type="submit" class="btn btn-primary" value="save">Save</button>
+          </div>
+        </form>
+      </dialog>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
