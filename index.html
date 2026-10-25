@@ -32,6 +32,15 @@
             </div>
             <button type="button" id="zoom-hint" class="zoom-hint" data-for="imagery" hidden>Zoom in to see this layer</button>
             <button type="button" id="heritage-hint" class="heritage-hint" hidden>Zoom in to see heritage sites</button>
+            <div id="draw-bar" class="draw-bar" hidden>
+              <p id="draw-info" role="status"></p>
+              <div class="draw-actions">
+                <button type="button" id="draw-undo" class="btn">Undo</button>
+                <button type="button" id="draw-cancel" class="btn">Cancel</button>
+                <button type="button" id="draw-save" class="btn btn-primary">Save</button>
+              </div>
+              <button type="button" id="draw-clear" class="linklike danger-link" hidden>Remove boundary</button>
+            </div>
             <div id="track-status" class="track-status" role="status" hidden>
               <span class="rec-dot" aria-hidden="true"></span>
               <span id="track-status-text">Recording</span>

@@ -4,6 +4,7 @@ import '@fontsource/instrument-sans/latin-700.css';
 import '@fontsource/jetbrains-mono/latin-400.css';
 import './styles.css';
 
+import { initBoundaries } from './boundaries.js';
 import { initDisclaimer } from './disclaimer.js';
 import { initFinds } from './finds.js';
 import { initHeritage } from './heritage.js';
@@ -24,6 +25,7 @@ initImagery();
 initSpots();
 initFinds();
 initTracks();
+initBoundaries();
 initHeritage();
 showScreen('map');
 initDisclaimer();

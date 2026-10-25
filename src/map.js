@@ -11,6 +11,7 @@ let baseId = null;
 let blend = null;
 let blendPercent = 0;
 let layerRequest = 0;
+let clickOverride = null;
 const tileJson = new Map();
 const selectListeners = new Set();
 const layerListeners = new Set();
@@ -88,7 +89,7 @@ export function initMap() {
   // Street layer blended over LiDAR/Historic sits above the base tile pane.
   map.createPane('blend').style.zIndex = 250;
 
-  map.on('click', (e) => selectPoint(e.latlng.lat, e.latlng.lng));
+  map.on('click', (e) => (clickOverride ? clickOverride(e.latlng) : selectPoint(e.latlng.lat, e.latlng.lng)));
   setBaseLayer(MAP_LAYER_ID);
   return map;
 }
@@ -105,6 +106,11 @@ export async function setBaseLayer(id) {
   baseId = id;
   updateBlend();
   for (const fn of layerListeners) fn(id);
+}
+
+/** While set, map taps go to `fn(latlng)` instead of moving the pin. */
+export function setClickOverride(fn) {
+  clickOverride = fn;
 }
 
 export function getBaseLayerId() {

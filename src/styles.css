@@ -481,3 +481,32 @@ body[data-screen='imagery'] .track-status { top: 68px; }
 .track { justify-content: space-between; flex-wrap: wrap; }
 .track-actions { display: flex; align-items: center; gap: 6px; }
 .track-actions .filter { min-height: 32px; padding: 0 10px; }
+
+/* Permission boundaries */
+body[data-drawing] .map-top,
+body[data-drawing] #spot-card,
+body[data-drawing] .heritage-hint { display: none !important; }
+.draw-bar {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  z-index: 650;
+  padding: 12px;
+  border-radius: var(--radius);
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+.draw-bar p { margin: 0 0 10px; font-weight: 600; }
+.draw-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.draw-bar .danger-link { margin-top: 6px; }
+.spot-icons { display: flex; }
+.card-perm {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-left: 5px solid var(--moss);
+  border-radius: 8px;
+  background: var(--moss-soft);
+  font-size: 0.9rem;
+}
+.card-perm-ask { border-left-color: var(--amber); background: #fdf3dc; }
