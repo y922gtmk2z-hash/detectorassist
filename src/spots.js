@@ -1,6 +1,7 @@
 // Saved spots, stored in this browser's localStorage only.
 import L from 'leaflet';
 import { LAYERS, MAP_LAYER_ID } from './config.js';
+import { areaHa, formatArea, pointInPolygon } from './geo.js';
 import { latLngToGridRef } from './gridref.js';
 import { getBaseLayerId, getSelected, goTo, layerDef, selectPoint } from './map.js';
 import { onScreenChange, showScreen } from './router.js';
@@ -23,9 +24,19 @@ export function loadSpots() {
   }
 }
 
+/** Saved spots whose permission boundary contains this point. */
+export function spotsContaining(lat, lng) {
+  return loadSpots().filter((s) => s.boundary?.length >= 3 && pointInPolygon({ lat, lng }, s.boundary));
+}
+
+export function updateSpot(id, patch) {
+  return storeSpots(loadSpots().map((s) => (s.id === id ? { ...s, ...patch } : s)));
+}
+
 function storeSpots(spots) {
   try {
     localStorage.setItem(KEY, JSON.stringify(spots));
+    document.dispatchEvent(new CustomEvent('spots-changed'));
     return true;
   } catch {
     toast('Could not save: storage on this device is full or blocked.');
@@ -106,14 +117,21 @@ function renderList() {
           <span class="spot-text">
             <span class="spot-name">${esc(s.name)}</span>
             <span class="spot-grid mono">${esc(s.gridRef ?? '')}</span>
-            <span class="spot-layer">Layer: ${esc(layerDef(s.layer)?.label ?? s.layer)}</span>
+            <span class="spot-layer">${
+              s.boundary?.length >= 3 ? `Boundary ${esc(formatArea(areaHa(s.boundary)))}` : `Layer: ${esc(layerDef(s.layer)?.label ?? s.layer)}`
+            }</span>
           </span>
         </button>
         <div class="spot-actions">
           <button type="button" class="tag tag-${esc(s.permission)}" data-act="toggle" title="Change permission tag">${esc(TAGS[s.permission] ?? s.permission)}</button>
+          <div class="spot-icons">
+          <button type="button" class="icon-btn flat" data-act="boundary" aria-label="${s.boundary ? 'Edit' : 'Draw'} permission boundary for ${esc(s.name)}" title="${s.boundary ? 'Edit' : 'Draw'} boundary">
+            <svg viewBox="0 0 24 24"><path d="M5 5h14v14H5z" stroke-dasharray="3 3"/><circle cx="5" cy="5" r="2"/><circle cx="19" cy="19" r="2"/></svg>
+          </button>
           <button type="button" class="icon-btn flat" data-act="delete" aria-label="Delete ${esc(s.name)}">
             <svg viewBox="0 0 24 24"><path d="M4 7h16M10 11v6m4-6v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>
           </button>
+          </div>
         </div>
       </li>`,
     )
@@ -131,6 +149,8 @@ list.addEventListener('click', (e) => {
     selectPoint(spot.lat, spot.lng, spot.name);
     showScreen('map');
     goTo(spot.lat, spot.lng, 16);
+  } else if (act === 'boundary') {
+    document.dispatchEvent(new CustomEvent('draw-boundary', { detail: spot }));
   } else if (act === 'toggle') {
     spot.permission = spot.permission === 'granted' ? 'ask' : 'granted';
     storeSpots(spots);

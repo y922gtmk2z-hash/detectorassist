@@ -30,10 +30,32 @@
               <h1 class="imagery-title">Imagery</h1>
               <button type="button" class="btn btn-accent" data-act="save-spot">Save spot</button>
             </div>
+            <div id="draw-bar" class="draw-bar" hidden>
+              <div class="segmented draw-modes" role="radiogroup" aria-label="How to draw">
+                <button type="button" role="radio" class="seg" data-draw-mode="tap">Tap corners</button>
+                <button type="button" role="radio" class="seg" data-draw-mode="freehand">Freehand</button>
+                <button type="button" role="radio" class="seg" data-draw-mode="walk">Walk it</button>
+              </div>
+              <p id="draw-info" role="status"></p>
+              <p id="draw-hint" class="draw-hint"></p>
+              <div class="draw-actions">
+                <button type="button" id="draw-undo" class="btn">Undo</button>
+                <button type="button" id="draw-cancel" class="btn">Cancel</button>
+                <button type="button" id="draw-save" class="btn btn-primary">Save</button>
+              </div>
+              <button type="button" id="draw-clear" class="linklike danger-link" hidden>Remove boundary</button>
+            </div>
+            <div class="map-notices">
+            <div id="track-status" class="track-status" role="status" hidden>
+              <span class="rec-dot" aria-hidden="true"></span>
+              <span class="visually-hidden">Recording search track:</span>
+                <span id="track-status-text">Waiting for GPS…</span>
+              <button type="button" id="track-stop" class="btn btn-accent">Stop</button>
+            </div>
             <button type="button" id="zoom-hint" class="zoom-hint" data-for="imagery" hidden>Zoom in to see this layer</button>
             <button type="button" id="heritage-hint" class="heritage-hint" hidden>Zoom in to see heritage sites</button>
-            <div class="map-side">
-              <div class="zoom-btns" data-for="imagery">
+            </div>
+              <div class="zoom-btns map-zoom" data-for="imagery">
                 <button type="button" id="zoom-in" class="icon-btn" aria-label="Zoom in">
                   <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
                 </button>
@@ -41,10 +63,14 @@
                   <svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg>
                 </button>
               </div>
+            <div class="map-side">
               <button type="button" class="icon-btn" data-act="heritage" aria-pressed="true" aria-label="Heritage overlay (Scheduled Monuments and listed sites)">
                 <svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V10m14 11V10M9 21v-7m6 7v-7M3 10l9-6 9 6z"/></svg>
               </button>
-              <button type="button" class="icon-btn" data-act="locate" aria-label="Use my location">
+              <button type="button" class="icon-btn" data-act="track" aria-pressed="false" aria-label="Record search track">
+                <svg viewBox="0 0 24 24"><path d="M4 18c3-1 3-6 6-6s3 4 6 4 3-6 4-9"/><circle cx="4" cy="18" r="1.5"/></svg>
+              </button>
+              <button type="button" class="icon-btn" data-act="locate" aria-pressed="false" aria-label="Live location">
                 <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/></svg>
               </button>
             </div>
@@ -52,6 +78,7 @@
           <div id="spot-card" class="card" data-for="map" aria-live="polite" hidden></div>
           <div id="imagery-panel" class="card" data-for="imagery">
             <div id="layer-switcher" class="segmented" role="radiogroup" aria-label="Imagery layer"></div>
+            <div id="variant-row" class="segmented variant-row" role="radiogroup" aria-label="LiDAR view" hidden></div>
             <div id="blend-row" class="blend-row">
               <label id="blend-label" for="blend">Blend with street</label>
               <input id="blend" type="range" min="0" max="100" step="5" value="0" />
@@ -59,6 +86,9 @@
             </div>
             <p id="imagery-tip" class="imagery-tip"></p>
             <p id="imagery-source" class="imagery-source"></p>
+            <a id="nls-link" class="ext-link" href="https://maps.nls.uk/geo/explore/side-by-side/" target="_blank" rel="noopener">
+              Historic OS maps of this spot <span class="ext-src">National Library of Scotland viewer ↗</span>
+            </a>
           </div>
         </section>
 
@@ -96,7 +126,30 @@
             </div>
           </header>
           <ul id="spots-list" class="spots"></ul>
+          <h2 class="section-title">Search tracks</h2>
+          <p class="spots-note section-note">The swath is about one detector sweep wide, so gaps show ground you haven't covered. Recording needs the screen on.</p>
+          <ul id="tracks-list" class="spots"></ul>
           <p class="spots-foot"><button type="button" class="linklike" data-act="disclaimer">Responsible detecting</button></p>
+        </section>
+
+        <section id="screen-finds" class="screen" data-screen="finds" hidden>
+          <header class="screen-header spots-header">
+            <h1>My finds <span id="finds-count" class="finds-count"></span></h1>
+            <p class="spots-note">Stored on this device only, photos included. Export regularly to keep a copy.</p>
+            <div class="filters" role="group" aria-label="Filter finds">
+              <button type="button" class="filter finds-filter" data-filter="all" aria-pressed="true">All</button>
+              <button type="button" class="filter finds-filter" data-filter="unrecorded" aria-pressed="false">Not yet recorded with PAS</button>
+            </div>
+          </header>
+          <ul id="finds-list" class="spots"></ul>
+          <div id="finds-export" class="finds-export" hidden>
+            <p class="spots-note">Export for your records or to help when recording with the
+              <a href="https://finds.org.uk/" target="_blank" rel="noopener">PAS</a>. Photos are not included.</p>
+            <div class="sheet-actions">
+              <button type="button" id="export-csv" class="btn">Export CSV</button>
+              <button type="button" id="export-gpx" class="btn">Export GPX</button>
+            </div>
+          </div>
         </section>
       </main>
 
@@ -112,6 +165,10 @@
         <button type="button" class="tab" data-tab="spots">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Zm0-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" /></svg>
           <span>Spots</span>
+        </button>
+        <button type="button" class="tab" data-tab="finds">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg>
+          <span>Finds</span>
         </button>
       </nav>
       <div id="toast" role="status" hidden></div>
@@ -130,6 +187,51 @@
             Saved spots stay on this device; nothing is uploaded and nothing is tracked.
           </p>
           <button type="submit" class="btn btn-primary btn-block" autofocus>I understand</button>
+        </form>
+      </dialog>
+
+      <dialog id="find-dialog" class="sheet" aria-labelledby="find-title-heading">
+        <form id="find-form" method="dialog">
+          <h2 id="find-title-heading">Log find</h2>
+          <p id="find-grid" class="mono save-grid"></p>
+          <label class="field">
+            <span>What is it?</span>
+            <input name="title" type="text" maxlength="100" placeholder="e.g. Hammered penny" />
+          </label>
+          <div class="field-row">
+            <label class="field"><span>Date</span><input name="date" type="date" /></label>
+            <label class="field"><span>Depth (cm)</span><input name="depthCm" type="number" min="0" max="300" inputmode="numeric" /></label>
+          </div>
+          <div class="field-row">
+            <label class="field"><span>Category</span><select name="category"></select></label>
+            <label class="field"><span>Period (best guess)</span><select name="period"></select></label>
+          </div>
+          <div class="field">
+            <span>Photo</span>
+            <div id="find-photo-preview" class="photo-preview"></div>
+            <div class="photo-actions">
+              <label class="btn">
+                <input id="find-photo" type="file" accept="image/*" capture="environment" class="visually-hidden" />
+                Add photo
+              </label>
+              <button type="button" id="find-photo-remove" class="btn" hidden>Remove photo</button>
+            </div>
+          </div>
+          <label class="field">
+            <span>Notes</span>
+            <textarea name="notes" rows="3" maxlength="2000" placeholder="Condition, context, field conditions…"></textarea>
+          </label>
+          <label class="radio"><input type="checkbox" name="pasRecorded" /> Recorded with the PAS</label>
+          <label class="field">
+            <span>PAS reference (optional)</span>
+            <input name="pasRef" type="text" maxlength="40" placeholder="e.g. SUR-123ABC" />
+          </label>
+          <p class="sheet-note">Saved on this device only. Nothing is uploaded.</p>
+          <div class="sheet-actions">
+            <button type="submit" class="btn" value="cancel" formnovalidate>Cancel</button>
+            <button type="submit" class="btn btn-primary" value="save">Save</button>
+          </div>
+          <button type="button" id="find-delete" class="linklike danger-link" hidden>Delete this find</button>
         </form>
       </dialog>
 

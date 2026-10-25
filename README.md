@@ -5,7 +5,36 @@ static site on GitHub Pages: no backend, no accounts, no analytics, no
 cookies. Saved spots stay in your browser's localStorage on your device.
 
 **Screens:** Map · Search · Imagery (Street / LiDAR / Historic with a blend
-slider) · Saved spots · Heritage overlay (Scheduled Monument warnings).
+slider) · Saved spots · My finds · Heritage overlay (Scheduled Monument
+warnings).
+
+**My finds** is a personal finds log: drop a pin, tap "Log find", and record
+what it is, date, depth, category, period, a photo, notes and whether it's
+recorded with the PAS. Finds show as amber dots on the map. Records are kept
+in localStorage and photos (shrunk to 1600 px JPEG) in IndexedDB, on the
+device only. Export to CSV or GPX from the Finds tab; photos are not
+exported.
+
+**In the field:**
+- **Live location:** the locate button toggles a live GPS dot with an
+  accuracy circle; the map follows you until you pan.
+- **Search tracks:** the record button logs where you walk, drawn as a swath
+  about one sweep (1.5 m) wide so missed ground shows. Fixes worse than 25 m
+  are ignored. A web page cannot use GPS with the screen off, so recording
+  keeps the screen awake (Screen Wake Lock) where the browser supports it.
+  Tracks are listed on the Spots tab with GPX export; an interrupted
+  recording is saved on next load.
+- **Permission boundaries:** draw the outline of land you have permission
+  for on any saved spot, any shape: tap corners (drag a corner to move it,
+  tap + to add one), trace it freehand (smoothed; closes itself when you
+  get back to the start), or walk the edge with GPS. Undo covers every
+  change; an outline that crosses itself can't be saved. Area is shown in
+  hectares and acres, measured on the OS grid. Boundaries show on the map, the spot card says which one a pin is
+  in, and with live location on you get a warning and vibration when you
+  walk out of one.
+- **Share links:** the address bar always holds the current pin or view
+  (`#pin=lat,lng&z=17&n=name`), so it can be bookmarked; the share button
+  on the spot card uses the phone's share sheet or copies the link.
 
 ## Develop
 
@@ -26,11 +55,19 @@ font CDN requests.
 `main`. One-time setup: **Settings → Pages → Build and deployment → Source:
 GitHub Actions**.
 
-### Optional: enable the Historic layer
+### Historic maps
 
-The NLS historic maps are served to third-party sites through MapTiler, which
-needs an API key (see the Historic map row in the table below). Without a key the Historic button
-shows as unavailable and everything else works.
+By default (no key), the **Historic** button and the "Historic OS maps of
+this spot" link open the National Library of Scotland's free side-by-side
+viewer at the pin, in a new tab. That viewer covers England, including the
+OS six-inch maps for England and Wales (1842–1952). Nothing is embedded, so
+no key or tile licence is needed.
+
+### Optional: embed the Historic layer instead
+
+To show NLS maps inside the app (with the blend slider), you need a MapTiler
+key, which is how NLS serves its tiles to other sites (see the Historic map
+row in the table below).
 
 1. Create a free MapTiler account and key. Restrict it to your Pages origin.
 2. Add it as a repository **variable** (not a secret, because it ships in
@@ -47,8 +84,10 @@ and changes with the active layer. All endpoints are in `src/config.js`.
 | Layer / service | Endpoint | Licence / terms | Attribution shown |
 |---|---|---|---|
 | **Street**: OpenStreetMap standard tiles | `https://tile.openstreetmap.org/{z}/{x}/{y}.png` | Data ODbL; [OSM tile usage policy](https://operations.osmfoundation.org/policies/tiles/) | © OpenStreetMap contributors (links to /copyright) |
-| **LiDAR**: Environment Agency LIDAR Composite DTM 1m (2022), hillshade | WMS `https://environment.data.gov.uk/geoservices/datasets/13787b9a-26a4-4775-8523-806d13af58fc/wms`, layer `Lidar_Composite_Hillshade_DTM_1m` | [Open Government Licence v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/) | © Environment Agency copyright and/or database right 2022. All rights reserved. + OGL link |
+| **LiDAR (Ground)**: Environment Agency LIDAR Composite DTM 1m (2022), hillshade | WMS `https://environment.data.gov.uk/geoservices/datasets/13787b9a-26a4-4775-8523-806d13af58fc/wms`, layer `Lidar_Composite_Hillshade_DTM_1m` | [Open Government Licence v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/) | © Environment Agency copyright and/or database right 2022. All rights reserved. + OGL link |
+| **LiDAR (Surface)**: Environment Agency LIDAR Composite DSM 1m (2022), hillshade | WMS `https://environment.data.gov.uk/geoservices/datasets/9ba4d5ac-d596-445a-9056-dae3ddec0178/wms`, layer `Lidar_Composite_Hillshade_LZ_DSM_1m` | Open Government Licence v3.0 | as LiDAR (Ground) |
 | **Historic**: National Library of Scotland, OS GB 1:1M to 1:10,560, 1900s (`uk-osgb1888`) | TileJSON `https://api.maptiler.com/tiles/uk-osgb1888/tiles.json?key=…` | NLS Historic Maps API: CC BY, attribution to NLS with a link; free MapTiler tier is for non-commercial use (≤100k tiles/month) | Historic OS map: National Library of Scotland (CC BY) via © MapTiler |
+| **Historic (link)**: NLS side-by-side viewer | `https://maps.nls.uk/geo/explore/side-by-side/#zoom=…&lat=…&lon=…` (link only) | NLS website terms | n/a (opens NLS's own site) |
 | **Search**: Nominatim | `https://nominatim.openstreetmap.org/search` | [Nominatim usage policy](https://operations.osmfoundation.org/policies/nominatim/); data ODbL | "Address search by Nominatim, data © OpenStreetMap contributors" on the Search screen |
 | **Heritage**: Historic England NHLE | `https://services-eu1.arcgis.com/ZOdPfBS3aqqDYPUQ/arcgis/rest/services/National_Heritage_List_for_England_NHLE_v02_VIEW/FeatureServer` | Open Government Licence v3.0 | Heritage: © Historic England {year}. Contains Ordnance Survey data © Crown copyright and database right {year}. + OGL link |
 | **Grid refs**: OS National Grid (EPSG:27700) | none (local proj4, 7-parameter Helmert, about 5 m accuracy) | n/a | n/a |
@@ -80,7 +119,8 @@ rather than live responses. **Check them in a browser before launch:**
       endpoint does not list a hillshade layer in any source found. The app
       uses the EA geoservices endpoint and layer name taken from the
       OpenStreetMap editor-layer-index (as shipped in iD 2.42). Confirm with
-      `GetCapabilities` on the URL above.
+      `GetCapabilities` on the URL above. The Surface (DSM) endpoint and
+      layer come from the same index and need the same check.
 - [ ] **NHLE:** Scheduled Monuments is reported as layer 6. The app reads
       the service's layer list and matches names (`/scheduled monument/i`,
       battlefields, parks and gardens, World Heritage Sites, protected wrecks,
