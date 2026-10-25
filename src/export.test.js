@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { findsToCsv, findsToGpx } from './finds-export.js';
+import { findsToCsv, findsToGpx, trackToGpx } from './export.js';
 
 const find = {
   date: '2026-10-25',
@@ -39,5 +39,14 @@ describe('findsToGpx', () => {
     expect(gpx).toContain('<name>Buckle &lt;&amp;&gt;</name>');
     expect(gpx).toContain('<time>2026-10-25T12:00:00Z</time>');
     expect(gpx).toContain('Coin · Medieval · 12 cm deep · SU 1234 5678');
+  });
+});
+
+describe('trackToGpx', () => {
+  it('writes a timed track segment', () => {
+    const gpx = trackToGpx({ name: 'Top field & lane', points: [[51.1, -1.2, 1761400000], [51.10001, -1.20002, 1761400005]] });
+    expect(gpx).toContain('<name>Top field &amp; lane</name>');
+    expect(gpx).toContain('<trkpt lat="51.100000" lon="-1.200000"><time>2025-10-25T13:46:40.000Z</time></trkpt>');
+    expect(gpx.match(/<trkpt /g)).toHaveLength(2);
   });
 });

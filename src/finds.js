@@ -1,12 +1,12 @@
 // Personal finds log, stored on this device only. Records live in
 // localStorage; photos in IndexedDB (photos.js). Export to CSV/GPX.
 import L from 'leaflet';
-import { findsToCsv, findsToGpx } from './finds-export.js';
+import { findsToCsv, findsToGpx } from './export.js';
 import { latLngToGridRef } from './gridref.js';
 import { getMap, getSelected, goTo, selectPoint } from './map.js';
 import { deletePhoto, getPhoto, putPhoto, requestPersistence, shrinkPhoto } from './photos.js';
 import { onScreenChange, showScreen } from './router.js';
-import { $, esc, toast } from './ui.js';
+import { $, download, esc, toast } from './ui.js';
 
 const KEY = 'detectorassist.finds.v1';
 
@@ -208,15 +208,6 @@ async function renderList() {
       /* keep the icon */
     }
   }
-}
-
-function download(text, type, filename) {
-  const url = URL.createObjectURL(new Blob([text], { type }));
-  const a = Object.assign(document.createElement('a'), { href: url, download: filename });
-  document.body.append(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 // --- Map markers --------------------------------------------------------------

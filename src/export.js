@@ -1,4 +1,4 @@
-// CSV and GPX export of the finds log. Pure functions, no DOM.
+// CSV and GPX export of finds and search tracks. Pure functions, no DOM.
 
 const CSV_COLUMNS = [
   ['date', 'Date'],
@@ -47,6 +47,26 @@ export function findsToGpx(finds) {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <gpx version="1.1" creator="Detectorist Map" xmlns="http://www.topografix.com/GPX/1/1">
 ${wpts.join('\n')}
+</gpx>
+`;
+}
+
+/** One search track as a GPX <trk>. Points are [lat, lng, unixSeconds]. */
+export function trackToGpx(track) {
+  const pts = track.points
+    .map(
+      ([lat, lng, t]) =>
+        `      <trkpt lat="${lat.toFixed(6)}" lon="${lng.toFixed(6)}"><time>${new Date(t * 1000).toISOString()}</time></trkpt>`,
+    )
+    .join('\n');
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="Detectorist Map" xmlns="http://www.topografix.com/GPX/1/1">
+  <trk>
+    <name>${xml(track.name)}</name>
+    <trkseg>
+${pts}
+    </trkseg>
+  </trk>
 </gpx>
 `;
 }

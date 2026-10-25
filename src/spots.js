@@ -1,6 +1,7 @@
 // Saved spots, stored in this browser's localStorage only.
 import L from 'leaflet';
 import { LAYERS, MAP_LAYER_ID } from './config.js';
+import { pointInPolygon } from './geo.js';
 import { latLngToGridRef } from './gridref.js';
 import { getBaseLayerId, getSelected, goTo, layerDef, selectPoint } from './map.js';
 import { onScreenChange, showScreen } from './router.js';
@@ -23,9 +24,19 @@ export function loadSpots() {
   }
 }
 
+/** Saved spots whose permission boundary contains this point. */
+export function spotsContaining(lat, lng) {
+  return loadSpots().filter((s) => s.boundary?.length >= 3 && pointInPolygon({ lat, lng }, s.boundary));
+}
+
+export function updateSpot(id, patch) {
+  return storeSpots(loadSpots().map((s) => (s.id === id ? { ...s, ...patch } : s)));
+}
+
 function storeSpots(spots) {
   try {
     localStorage.setItem(KEY, JSON.stringify(spots));
+    document.dispatchEvent(new CustomEvent('spots-changed'));
     return true;
   } catch {
     toast('Could not save: storage on this device is full or blocked.');

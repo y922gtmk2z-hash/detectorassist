@@ -13,6 +13,7 @@ import { initMap, refreshSize } from './map.js';
 import { initTabs, onScreenChange, showScreen } from './router.js';
 import { initSearch } from './search.js';
 import { initSpots } from './spots.js';
+import { initTracks } from './tracks.js';
 
 initTabs();
 initMap();
@@ -22,6 +23,7 @@ initSearch();
 initImagery();
 initSpots();
 initFinds();
+initTracks();
 initHeritage();
 showScreen('map');
 initDisclaimer();
