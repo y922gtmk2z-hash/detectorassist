@@ -27,9 +27,14 @@ export function renderCard() {
         <p class="card-grid mono">${esc(grid)}</p>
         <p class="card-ll mono">${esc(formatLatLng(s.lat, s.lng))}</p>
       </div>
-      <button type="button" class="icon-btn flat" data-act="close" aria-label="Clear pin">
-        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
-      </button>
+      <div class="card-head-btns">
+        <button type="button" class="icon-btn flat" data-act="share" aria-label="Share this spot">
+          <svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="m8.2 10.8 7.6-3.6M8.2 13.2l7.6 3.6"/></svg>
+        </button>
+        <button type="button" class="icon-btn flat" data-act="close" aria-label="Clear pin">
+          <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
     </div>
     <div class="card-extras"></div>
     <div class="card-layers"><span>Layers</span><ul class="chips">${layers}</ul></div>
@@ -50,6 +55,7 @@ card.addEventListener('click', (e) => {
   if (act === 'close') clearSelection();
   if (act === 'imagery') showScreen('imagery');
   if (act === 'save') card.dispatchEvent(new CustomEvent('save-spot', { bubbles: true }));
+  if (act === 'share') card.dispatchEvent(new CustomEvent('share-spot', { bubbles: true }));
   if (act === 'log-find') card.dispatchEvent(new CustomEvent('log-find', { bubbles: true }));
 });
 

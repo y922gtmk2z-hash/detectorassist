@@ -514,3 +514,5 @@ body[data-drawing] .heritage-hint { display: none !important; }
 
 .variant-row { margin-top: 8px; padding: 3px; }
 .variant-row .seg { min-height: 34px; font-size: 0.88rem; }
+
+.card-head-btns { display: flex; align-items: flex-start; }
