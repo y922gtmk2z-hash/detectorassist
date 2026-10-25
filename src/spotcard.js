@@ -1,9 +1,9 @@
 // The selected-spot card shown under the map on the Map screen.
 import { LAYERS } from './config.js';
 import { formatLatLng, latLngToGridRef } from './gridref.js';
-import { clearSelection, getSelected, goTo, onSelect, refreshSize, selectPoint } from './map.js';
+import { clearSelection, getSelected, onSelect, refreshSize } from './map.js';
 import { showScreen } from './router.js';
-import { $, esc, toast } from './ui.js';
+import { $, esc } from './ui.js';
 
 const card = $('#spot-card');
 const extras = [];
@@ -54,23 +54,3 @@ card.addEventListener('click', (e) => {
 });
 
 onSelect(renderCard);
-
-export function initLocate() {
-  for (const btn of document.querySelectorAll('[data-act="locate"]')) {
-    btn.addEventListener('click', locate);
-  }
-}
-
-export function locate() {
-  if (!navigator.geolocation) return toast('Location is not available on this device.');
-  toast('Finding your location…');
-  navigator.geolocation.getCurrentPosition(
-    (pos) => {
-      const { latitude: lat, longitude: lng } = pos.coords;
-      selectPoint(lat, lng, 'My location');
-      goTo(lat, lng, 16);
-    },
-    () => toast('Could not get your location. Check location permission.'),
-    { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 },
-  );
-}

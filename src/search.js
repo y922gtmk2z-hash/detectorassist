@@ -5,7 +5,7 @@ import { geocode } from './geocode.js';
 import { formatLatLng, latLngToGridRef, parseGridRef, parseLatLng } from './gridref.js';
 import { goTo, selectPoint } from './map.js';
 import { showScreen } from './router.js';
-import { locate } from './spotcard.js';
+import { locate } from './location.js';
 import { $, esc, toast } from './ui.js';
 
 const input = $('#search-input');

@@ -8,16 +8,16 @@ import { initDisclaimer } from './disclaimer.js';
 import { initFinds } from './finds.js';
 import { initHeritage } from './heritage.js';
 import { initImagery } from './imagery.js';
+import { initLocation } from './location.js';
 import { initMap, refreshSize } from './map.js';
 import { initTabs, onScreenChange, showScreen } from './router.js';
 import { initSearch } from './search.js';
 import { initSpots } from './spots.js';
-import { initLocate } from './spotcard.js';
 
 initTabs();
 initMap();
 onScreenChange(refreshSize);
-initLocate();
+initLocation();
 initSearch();
 initImagery();
 initSpots();
