@@ -167,7 +167,12 @@ export function goTo(lat, lng, zoom = 16) {
   map.setView([lat, lng], Math.max(zoom, map.getZoom()));
 }
 
-/** The map container changes size when panels show/hide. */
+/**
+ * The map container changes size when panels show/hide. Runs synchronously
+ * so a following setView uses the new size; skipped while the map is hidden
+ * (it would measure 0x0). pan:false keeps the top-left fixed so a pin stays
+ * under the finger when the spot card opens.
+ */
 export function refreshSize() {
-  if (map) requestAnimationFrame(() => map.invalidateSize({ pan: false }));
+  if (map?.getContainer().offsetWidth) map.invalidateSize({ pan: false });
 }

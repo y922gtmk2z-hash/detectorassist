@@ -4,6 +4,7 @@ import '@fontsource/instrument-sans/latin-700.css';
 import '@fontsource/jetbrains-mono/latin-400.css';
 import './styles.css';
 
+import { initHeritage } from './heritage.js';
 import { initImagery } from './imagery.js';
 import { initMap, refreshSize } from './map.js';
 import { initTabs, onScreenChange, showScreen } from './router.js';
@@ -13,9 +14,10 @@ import { initLocate } from './spotcard.js';
 
 initTabs();
 initMap();
+onScreenChange(refreshSize);
 initLocate();
 initSearch();
 initImagery();
 initSpots();
-onScreenChange(refreshSize);
+initHeritage();
 showScreen('map');

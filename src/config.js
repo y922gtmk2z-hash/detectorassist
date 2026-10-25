@@ -74,3 +74,17 @@ export const DEFAULT_IMAGERY_LAYER_ID = 'lidar';
 
 // Geocoding: https://operations.osmfoundation.org/policies/nominatim/
 export const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search';
+
+// Historic England National Heritage List for England (NHLE), OGL v3.0.
+// Layers are matched by name from the service's layer list at runtime.
+export const NHLE_URL =
+  'https://services-eu1.arcgis.com/ZOdPfBS3aqqDYPUQ/arcgis/rest/services/National_Heritage_List_for_England_NHLE_v02_VIEW/FeatureServer';
+export const NHLE_SCHEDULED_FALLBACK_ID = 6;
+export const NHLE_MIN_ZOOM = 13;
+export const NHLE_POINTS_MIN_ZOOM = 16;
+
+const year = new Date().getFullYear();
+export const NHLE_ATTRIBUTION =
+  `Heritage: © <a href="https://historicengland.org.uk/listing/the-list/" target="_blank" rel="noopener">Historic England</a> ${year}. ` +
+  `Contains Ordnance Survey data © Crown copyright and database right ${year}. ` +
+  '<a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="noopener">OGL v3.0</a>';
