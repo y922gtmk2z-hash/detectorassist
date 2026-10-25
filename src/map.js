@@ -1,7 +1,7 @@
 // The single Leaflet map shared by the Map and Imagery screens.
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { BLEND_LAYER_ID, ENGLAND_BOUNDS, ENGLAND_CENTRE, LAYERS } from './config.js';
+import { BLEND_LAYER_ID, ENGLAND_BOUNDS, ENGLAND_CENTRE, LAYERS, MAP_LAYER_ID } from './config.js';
 
 let map;
 let pin = null;
@@ -10,6 +10,8 @@ let base = null;
 let baseId = null;
 let blend = null;
 let blendPercent = 0;
+let layerRequest = 0;
+const tileJson = new Map();
 const selectListeners = new Set();
 const layerListeners = new Set();
 
@@ -29,6 +31,38 @@ export function getMap() {
 
 export function layerDef(id) {
   return LAYERS.find((l) => l.id === id);
+}
+
+// Turn a 'tilejson' definition into an 'xyz' one by reading its TileJSON.
+async function resolve(def) {
+  if (def.type !== 'tilejson') return def;
+  if (!tileJson.has(def.id)) {
+    tileJson.set(
+      def.id,
+      fetch(def.url).then((r) => {
+        if (!r.ok) throw new Error(`${def.label} tiles unavailable (${r.status})`);
+        return r.json();
+      }),
+    );
+  }
+  let tj;
+  try {
+    tj = await tileJson.get(def.id);
+  } catch (err) {
+    tileJson.delete(def.id);
+    throw err;
+  }
+  const b = tj.bounds;
+  return {
+    ...def,
+    type: 'xyz',
+    url: tj.tiles[0],
+    options: {
+      ...def.options,
+      maxNativeZoom: tj.maxzoom,
+      ...(b ? { bounds: [[b[1], b[0]], [b[3], b[2]]] } : {}),
+    },
+  };
 }
 
 function makeLayer(def, pane) {
@@ -55,15 +89,19 @@ export function initMap() {
   map.createPane('blend').style.zIndex = 250;
 
   map.on('click', (e) => selectPoint(e.latlng.lat, e.latlng.lng));
-  setBaseLayer(BLEND_LAYER_ID);
+  setBaseLayer(MAP_LAYER_ID);
   return map;
 }
 
-export function setBaseLayer(id) {
+/** Switch the base layer. Rejects if the layer cannot be loaded. */
+export async function setBaseLayer(id) {
   const def = layerDef(id);
-  if (!def || def.disabled) return;
+  if (!def || def.disabled || id === baseId) return;
+  const request = ++layerRequest;
+  const resolved = await resolve(def);
+  if (request !== layerRequest) return; // a later switch won
   if (base) map.removeLayer(base);
-  base = makeLayer(def, 'tilePane').addTo(map);
+  base = makeLayer(resolved, 'tilePane').addTo(map);
   baseId = id;
   updateBlend();
   for (const fn of layerListeners) fn(id);

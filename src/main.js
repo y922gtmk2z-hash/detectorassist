@@ -4,6 +4,7 @@ import '@fontsource/instrument-sans/latin-700.css';
 import '@fontsource/jetbrains-mono/latin-400.css';
 import './styles.css';
 
+import { initImagery } from './imagery.js';
 import { initMap, refreshSize } from './map.js';
 import { initTabs, onScreenChange, showScreen } from './router.js';
 import { initSearch } from './search.js';
@@ -13,5 +14,6 @@ initTabs();
 initMap();
 initLocate();
 initSearch();
+initImagery();
 onScreenChange(refreshSize);
 showScreen('map');
