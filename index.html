@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#1E4D3B" />
+    <meta name="description" content="Free map for metal detectorists in England: street, LiDAR and historic maps, OS grid refs and heritage warnings." />
+    <title>Detectorist Map</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <div id="app">
+      <main id="screens">
+        <!-- Map + Imagery share one Leaflet map; the chrome around it changes. -->
+        <section id="screen-map" class="screen" data-screen="map imagery">
+          <div id="map" aria-label="Map"></div>
+        </section>
+
+        <section id="screen-spots" class="screen" data-screen="spots" hidden>
+          <header class="screen-header"><h1>Saved spots</h1></header>
+        </section>
+      </main>
+
+      <nav class="tabbar" aria-label="Main">
+        <button type="button" class="tab" data-tab="map" aria-current="page">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Zm0 0v14m6-12v14" /></svg>
+          <span>Map</span>
+        </button>
+        <button type="button" class="tab" data-tab="imagery">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5" /></svg>
+          <span>Imagery</span>
+        </button>
+        <button type="button" class="tab" data-tab="spots">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Zm0-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" /></svg>
+          <span>Spots</span>
+        </button>
+      </nav>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
