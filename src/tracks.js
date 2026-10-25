@@ -106,8 +106,7 @@ function renderStatus() {
   if (!recording) return;
   const mins = Math.floor((Date.now() - recording.startedAt) / 60000);
   $('#track-status-text').textContent =
-    `Recording · ${formatDistance(pathLengthM(recording.points))} · ${mins} min` +
-    (recording.points.length ? '' : ' · waiting for GPS');
+    recording.points.length ? `${formatDistance(pathLengthM(recording.points))} · ${mins} min` : 'Waiting for GPS…';
 }
 
 function startRecording() {

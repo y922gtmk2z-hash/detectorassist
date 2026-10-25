@@ -147,7 +147,7 @@ body:not([data-screen='imagery']) [data-for='imagery'] { display: none !importan
 .map-side {
   position: absolute;
   right: 12px;
-  bottom: 40px;
+  top: 76px;
   z-index: 500;
   display: flex;
   flex-direction: column;
@@ -276,12 +276,23 @@ body:not([data-screen='imagery']) [data-for='imagery'] { display: none !importan
 }
 .imagery-top .btn { box-shadow: var(--shadow); }
 .zoom-btns { display: flex; flex-direction: column; gap: 6px; }
-.zoom-hint {
+.map-zoom { position: absolute; left: 12px; top: 76px; z-index: 500; }
+/* Status pills sit between the left and right button columns, so they
+   never cover the controls or the attribution at the bottom. */
+.map-notices {
   position: absolute;
-  top: 74px;
-  left: 50%;
-  z-index: 500;
-  transform: translateX(-50%);
+  top: 76px;
+  left: 68px;
+  right: 68px;
+  z-index: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+.map-notices > * { pointer-events: auto; }
+.zoom-hint {
   padding: 8px 14px;
   border: 0;
   border-radius: 999px;
@@ -379,11 +390,6 @@ body:not([data-screen='imagery']) [data-for='imagery'] { display: none !importan
 
 /* Heritage overlay */
 .heritage-hint {
-  position: absolute;
-  left: 12px;
-  bottom: 40px;
-  z-index: 500;
-  max-width: calc(100% - 80px);
   padding: 8px 12px;
   border: 1px solid var(--line);
   border-radius: 999px;
@@ -453,15 +459,11 @@ body:not([data-screen='imagery']) [data-for='imagery'] { display: none !importan
 
 /* Search tracks */
 .track-status {
-  position: absolute;
-  top: 72px;
-  left: 12px;
-  right: 12px;
-  z-index: 600;
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 6px 6px 6px 14px;
+  padding: 6px 6px 6px 12px;
   border-radius: 12px;
   background: var(--ink);
   color: #fff;
@@ -469,7 +471,6 @@ body:not([data-screen='imagery']) [data-for='imagery'] { display: none !importan
   font-size: 0.9rem;
   box-shadow: var(--shadow);
 }
-body[data-screen='imagery'] .track-status { top: 68px; }
 #track-status-text { flex: 1; }
 .track-status .btn { min-height: 38px; }
 .rec-dot { width: 12px; height: 12px; border-radius: 50%; background: #e53935; animation: rec 1.2s infinite; }
@@ -510,3 +511,6 @@ body[data-drawing] .heritage-hint { display: none !important; }
   font-size: 0.9rem;
 }
 .card-perm-ask { border-left-color: var(--amber); background: #fdf3dc; }
+
+.variant-row { margin-top: 8px; padding: 3px; }
+.variant-row .seg { min-height: 34px; font-size: 0.88rem; }

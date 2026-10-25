@@ -19,7 +19,7 @@ export function renderCard() {
   refreshSize();
   if (!s) return;
   const grid = latLngToGridRef(s.lat, s.lng) ?? 'Outside OS grid';
-  const layers = LAYERS.filter((l) => !l.disabled).map((l) => `<li>${esc(l.label)}</li>`).join('');
+  const layers = LAYERS.filter((l) => !l.disabled && !l.variantOf).map((l) => `<li>${esc(l.label)}</li>`).join('');
   card.innerHTML = `
     <div class="card-head">
       <div>

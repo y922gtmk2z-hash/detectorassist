@@ -30,8 +30,6 @@
               <h1 class="imagery-title">Imagery</h1>
               <button type="button" class="btn btn-accent" data-act="save-spot">Save spot</button>
             </div>
-            <button type="button" id="zoom-hint" class="zoom-hint" data-for="imagery" hidden>Zoom in to see this layer</button>
-            <button type="button" id="heritage-hint" class="heritage-hint" hidden>Zoom in to see heritage sites</button>
             <div id="draw-bar" class="draw-bar" hidden>
               <p id="draw-info" role="status"></p>
               <div class="draw-actions">
@@ -41,13 +39,17 @@
               </div>
               <button type="button" id="draw-clear" class="linklike danger-link" hidden>Remove boundary</button>
             </div>
+            <div class="map-notices">
             <div id="track-status" class="track-status" role="status" hidden>
               <span class="rec-dot" aria-hidden="true"></span>
-              <span id="track-status-text">Recording</span>
+              <span class="visually-hidden">Recording search track:</span>
+                <span id="track-status-text">Waiting for GPS…</span>
               <button type="button" id="track-stop" class="btn btn-accent">Stop</button>
             </div>
-            <div class="map-side">
-              <div class="zoom-btns" data-for="imagery">
+            <button type="button" id="zoom-hint" class="zoom-hint" data-for="imagery" hidden>Zoom in to see this layer</button>
+            <button type="button" id="heritage-hint" class="heritage-hint" hidden>Zoom in to see heritage sites</button>
+            </div>
+              <div class="zoom-btns map-zoom" data-for="imagery">
                 <button type="button" id="zoom-in" class="icon-btn" aria-label="Zoom in">
                   <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
                 </button>
@@ -55,6 +57,7 @@
                   <svg viewBox="0 0 24 24"><path d="M5 12h14"/></svg>
                 </button>
               </div>
+            <div class="map-side">
               <button type="button" class="icon-btn" data-act="heritage" aria-pressed="true" aria-label="Heritage overlay (Scheduled Monuments and listed sites)">
                 <svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V10m14 11V10M9 21v-7m6 7v-7M3 10l9-6 9 6z"/></svg>
               </button>
@@ -69,6 +72,7 @@
           <div id="spot-card" class="card" data-for="map" aria-live="polite" hidden></div>
           <div id="imagery-panel" class="card" data-for="imagery">
             <div id="layer-switcher" class="segmented" role="radiogroup" aria-label="Imagery layer"></div>
+            <div id="variant-row" class="segmented variant-row" role="radiogroup" aria-label="LiDAR view" hidden></div>
             <div id="blend-row" class="blend-row">
               <label id="blend-label" for="blend">Blend with street</label>
               <input id="blend" type="range" min="0" max="100" step="5" value="0" />

@@ -11,20 +11,30 @@ const blendValue = $('#blend-value');
 const tip = $('#imagery-tip');
 const source = $('#imagery-source');
 const zoomHint = $('#zoom-hint');
+const variantRow = $('#variant-row');
+
+// Top-level id for a layer (a variant's parent).
+const groupOf = (id) => layerDef(id)?.variantOf ?? id;
+const variantsOf = (group) => LAYERS.filter((l) => l.id === group || l.variantOf === group);
 
 let imageryLayerId = DEFAULT_IMAGERY_LAYER_ID;
 
 function renderSwitcher() {
-  switcher.innerHTML = LAYERS.map(
+  switcher.innerHTML = LAYERS.filter((l) => !l.variantOf).map(
     (l) => `<button type="button" role="radio" class="seg" data-layer="${esc(l.id)}"
-        aria-checked="${l.id === imageryLayerId}" ${l.disabled ? 'aria-disabled="true"' : ''}
+        aria-checked="${l.id === groupOf(imageryLayerId)}" ${l.disabled ? 'aria-disabled="true"' : ''}
         title="${esc(l.disabled ? l.disabledReason : l.label)}">${esc(l.label)}</button>`,
   ).join('');
 }
 
 function renderInfo(id) {
   const def = layerDef(id);
-  for (const b of switcher.querySelectorAll('.seg')) b.setAttribute('aria-checked', String(b.dataset.layer === id));
+  for (const b of switcher.querySelectorAll('.seg')) b.setAttribute('aria-checked', String(b.dataset.layer === groupOf(id)));
+  const variants = variantsOf(groupOf(id));
+  variantRow.hidden = variants.length < 2;
+  variantRow.innerHTML = variants
+    .map((v) => `<button type="button" role="radio" class="seg" data-variant="${esc(v.id)}" aria-checked="${v.id === id}">${esc(v.variantLabel ?? v.label)}</button>`)
+    .join('');
   blendRow.hidden = id === BLEND_LAYER_ID;
   tip.innerHTML = `<strong>Look for:</strong> ${esc(def.tip)}`;
   source.textContent = `Source: ${def.source}`;
@@ -57,7 +67,14 @@ export function initImagery() {
 
   switcher.addEventListener('click', (e) => {
     const b = e.target.closest('.seg');
-    if (b) choose(b.dataset.layer);
+    if (!b) return;
+    // Re-selecting a group keeps its current variant.
+    const keep = groupOf(imageryLayerId) === b.dataset.layer ? imageryLayerId : b.dataset.layer;
+    choose(keep);
+  });
+  variantRow.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-variant]');
+    if (b) choose(b.dataset.variant);
   });
   blendInput.addEventListener('input', () => {
     blendValue.textContent = `${blendInput.value}%`;
