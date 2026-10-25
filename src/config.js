@@ -68,6 +68,7 @@ export const LAYERS = [
 // The Map screen always shows this layer.
 export const MAP_LAYER_ID = 'street';
 // The layer the imagery blend slider fades over the active layer.
+// Must be an 'xyz' or 'wms' layer (the blend overlay does not read TileJSON).
 export const BLEND_LAYER_ID = 'street';
 // The layer the imagery viewer opens on.
 export const DEFAULT_IMAGERY_LAYER_ID = 'lidar';
