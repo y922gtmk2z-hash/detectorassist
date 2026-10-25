@@ -31,3 +31,6 @@ export const LAYERS = [
 ];
 
 export const BLEND_LAYER_ID = 'street';
+
+// Geocoding: https://operations.osmfoundation.org/policies/nominatim/
+export const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search';
