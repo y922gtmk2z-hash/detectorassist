@@ -17,8 +17,13 @@ analytics, cookies or API keys.
 - `src/gridref.js`: OS grid ref <-> WGS84 (local, no network).
 - `src/geocode.js`: Nominatim client (rate limited; submit-only, no autocomplete).
 - `src/heritage.js`: Historic England NHLE overlay.
+- `src/location.js`: live GPS (shared watch; `hold`/`release`).
+- `src/tracks.js`: search track recording, swath display, GPX export.
+- `src/boundaries.js`: permission boundaries on saved spots, leave warning.
+- `src/share.js` + `src/link.js`: URL hash state and share button.
+- `src/geo.js`: distance, area (on the OS grid), point-in-polygon.
 - `src/spots.js`: saved spots (localStorage).
-- `src/finds.js`: personal finds log (localStorage) with photos in IndexedDB (`src/photos.js`) and CSV/GPX export (`src/finds-export.js`).
+- `src/finds.js`: personal finds log (localStorage) with photos in IndexedDB (`src/photos.js`) and CSV/GPX export (`src/export.js`).
 - `design/`: design reference export.
 
 ## Rules
