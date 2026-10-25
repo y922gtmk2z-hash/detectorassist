@@ -35,7 +35,8 @@ export function renderCard() {
     <div class="card-layers"><span>Layers</span><ul class="chips">${layers}</ul></div>
     <div class="card-actions">
       <button type="button" class="btn" data-act="save">Save spot</button>
-      <button type="button" class="btn btn-primary" data-act="imagery">View imagery</button>
+      <button type="button" class="btn" data-act="log-find">Log find</button>
+      <button type="button" class="btn btn-primary" data-act="imagery">Imagery</button>
     </div>`;
   const slot = card.querySelector('.card-extras');
   for (const render of extras) {
@@ -49,6 +50,7 @@ card.addEventListener('click', (e) => {
   if (act === 'close') clearSelection();
   if (act === 'imagery') showScreen('imagery');
   if (act === 'save') card.dispatchEvent(new CustomEvent('save-spot', { bubbles: true }));
+  if (act === 'log-find') card.dispatchEvent(new CustomEvent('log-find', { bubbles: true }));
 });
 
 onSelect(renderCard);

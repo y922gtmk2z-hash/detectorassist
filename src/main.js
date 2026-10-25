@@ -5,6 +5,7 @@ import '@fontsource/jetbrains-mono/latin-400.css';
 import './styles.css';
 
 import { initDisclaimer } from './disclaimer.js';
+import { initFinds } from './finds.js';
 import { initHeritage } from './heritage.js';
 import { initImagery } from './imagery.js';
 import { initMap, refreshSize } from './map.js';
@@ -20,6 +21,7 @@ initLocate();
 initSearch();
 initImagery();
 initSpots();
+initFinds();
 initHeritage();
 showScreen('map');
 initDisclaimer();

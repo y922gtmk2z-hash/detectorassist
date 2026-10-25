@@ -172,7 +172,8 @@ body:not([data-screen='imagery']) [data-for='imagery'] { display: none !importan
 .card-layers { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 0.8rem; color: var(--ink-2); }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
 .chips li { padding: 2px 8px; border-radius: 999px; background: var(--moss-soft); color: var(--moss); font-weight: 600; }
-.card-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+.card-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+.card-actions .btn { padding: 0 8px; }
 
 #toast {
   position: fixed;
@@ -322,6 +323,8 @@ body:not([data-screen='imagery']) [data-for='imagery'] { display: none !importan
   padding: 20px 16px calc(16px + var(--safe-b));
   border: 0;
   border-radius: 18px 18px 0 0;
+  max-height: 92dvh;
+  overflow-y: auto;
   background: var(--paper);
   color: var(--ink);
 }
@@ -418,3 +421,32 @@ body:not([data-screen='imagery']) [data-for='imagery'] { display: none !importan
 .btn-block { width: 100%; }
 .spots-foot { margin: 16px; text-align: center; }
 .linklike { padding: 8px; border: 0; background: none; color: var(--moss); font-weight: 700; text-decoration: underline; }
+
+/* Finds log */
+.finds-count { font-size: 0.9rem; font-weight: 600; color: var(--ink-2); }
+.find-thumb { display: grid; place-items: center; }
+.find-thumb svg { width: 30px; height: 30px; fill: none; stroke: var(--moss); stroke-width: 2; }
+.find-thumb img { position: static; width: 100%; height: 100%; object-fit: cover; }
+.finds-export { padding: 16px; border-top: 1px solid var(--line); }
+.finds-export .spots-note { margin-bottom: 10px; }
+.finds-export a { color: var(--moss); }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.field input[type='date'],
+.field input[type='number'],
+.field select,
+.field textarea {
+  width: 100%;
+  min-height: 46px;
+  padding: 8px 10px;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper);
+  font: inherit;
+  font-weight: 400;
+}
+.field textarea { resize: vertical; }
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--moss); outline: none; }
+.field input[type='text'] { width: 100%; }
+.photo-preview img { display: block; max-width: 100%; max-height: 220px; border-radius: 10px; }
+.photo-actions { display: flex; gap: 10px; }
+.danger-link { display: block; margin: 12px auto 0; color: var(--danger); }

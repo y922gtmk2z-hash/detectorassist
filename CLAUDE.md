@@ -18,6 +18,7 @@ analytics, cookies or API keys.
 - `src/geocode.js`: Nominatim client (rate limited; submit-only, no autocomplete).
 - `src/heritage.js`: Historic England NHLE overlay.
 - `src/spots.js`: saved spots (localStorage).
+- `src/finds.js`: personal finds log (localStorage) with photos in IndexedDB (`src/photos.js`) and CSV/GPX export (`src/finds-export.js`).
 - `design/`: design reference export.
 
 ## Rules
@@ -26,6 +27,6 @@ analytics, cookies or API keys.
   download, at most 1 Nominatim request per second, never per keystroke.
 - No API keys or secrets committed. The Historic layer only turns on when a
   key is supplied at build time (see README).
-- No legal advice in the UI. Keep to the five screens in the brief.
+- No legal advice in the UI. Keep to the screens in the brief plus the finds log.
 - Deferred, do not build: Aerial imagery, PAS finds.
 - Adding a layer = one entry in `LAYERS` in `src/config.js`.

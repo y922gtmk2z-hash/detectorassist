@@ -98,6 +98,26 @@
           <ul id="spots-list" class="spots"></ul>
           <p class="spots-foot"><button type="button" class="linklike" data-act="disclaimer">Responsible detecting</button></p>
         </section>
+
+        <section id="screen-finds" class="screen" data-screen="finds" hidden>
+          <header class="screen-header spots-header">
+            <h1>My finds <span id="finds-count" class="finds-count"></span></h1>
+            <p class="spots-note">Stored on this device only, photos included. Export regularly to keep a copy.</p>
+            <div class="filters" role="group" aria-label="Filter finds">
+              <button type="button" class="filter finds-filter" data-filter="all" aria-pressed="true">All</button>
+              <button type="button" class="filter finds-filter" data-filter="unrecorded" aria-pressed="false">Not yet recorded with PAS</button>
+            </div>
+          </header>
+          <ul id="finds-list" class="spots"></ul>
+          <div id="finds-export" class="finds-export" hidden>
+            <p class="spots-note">Export for your records or to help when recording with the
+              <a href="https://finds.org.uk/" target="_blank" rel="noopener">PAS</a>. Photos are not included.</p>
+            <div class="sheet-actions">
+              <button type="button" id="export-csv" class="btn">Export CSV</button>
+              <button type="button" id="export-gpx" class="btn">Export GPX</button>
+            </div>
+          </div>
+        </section>
       </main>
 
       <nav class="tabbar" aria-label="Main">
@@ -112,6 +132,10 @@
         <button type="button" class="tab" data-tab="spots">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Zm0-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" /></svg>
           <span>Spots</span>
+        </button>
+        <button type="button" class="tab" data-tab="finds">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg>
+          <span>Finds</span>
         </button>
       </nav>
       <div id="toast" role="status" hidden></div>
@@ -130,6 +154,51 @@
             Saved spots stay on this device; nothing is uploaded and nothing is tracked.
           </p>
           <button type="submit" class="btn btn-primary btn-block" autofocus>I understand</button>
+        </form>
+      </dialog>
+
+      <dialog id="find-dialog" class="sheet" aria-labelledby="find-title-heading">
+        <form id="find-form" method="dialog">
+          <h2 id="find-title-heading">Log find</h2>
+          <p id="find-grid" class="mono save-grid"></p>
+          <label class="field">
+            <span>What is it?</span>
+            <input name="title" type="text" maxlength="100" placeholder="e.g. Hammered penny" />
+          </label>
+          <div class="field-row">
+            <label class="field"><span>Date</span><input name="date" type="date" /></label>
+            <label class="field"><span>Depth (cm)</span><input name="depthCm" type="number" min="0" max="300" inputmode="numeric" /></label>
+          </div>
+          <div class="field-row">
+            <label class="field"><span>Category</span><select name="category"></select></label>
+            <label class="field"><span>Period (best guess)</span><select name="period"></select></label>
+          </div>
+          <div class="field">
+            <span>Photo</span>
+            <div id="find-photo-preview" class="photo-preview"></div>
+            <div class="photo-actions">
+              <label class="btn">
+                <input id="find-photo" type="file" accept="image/*" capture="environment" class="visually-hidden" />
+                Add photo
+              </label>
+              <button type="button" id="find-photo-remove" class="btn" hidden>Remove photo</button>
+            </div>
+          </div>
+          <label class="field">
+            <span>Notes</span>
+            <textarea name="notes" rows="3" maxlength="2000" placeholder="Condition, context, field conditions…"></textarea>
+          </label>
+          <label class="radio"><input type="checkbox" name="pasRecorded" /> Recorded with the PAS</label>
+          <label class="field">
+            <span>PAS reference (optional)</span>
+            <input name="pasRef" type="text" maxlength="40" placeholder="e.g. SUR-123ABC" />
+          </label>
+          <p class="sheet-note">Saved on this device only. Nothing is uploaded.</p>
+          <div class="sheet-actions">
+            <button type="submit" class="btn" value="cancel" formnovalidate>Cancel</button>
+            <button type="submit" class="btn btn-primary" value="save">Save</button>
+          </div>
+          <button type="button" id="find-delete" class="linklike danger-link" hidden>Delete this find</button>
         </form>
       </dialog>
 

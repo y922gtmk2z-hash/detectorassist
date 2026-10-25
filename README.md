@@ -5,7 +5,15 @@ static site on GitHub Pages: no backend, no accounts, no analytics, no
 cookies. Saved spots stay in your browser's localStorage on your device.
 
 **Screens:** Map · Search · Imagery (Street / LiDAR / Historic with a blend
-slider) · Saved spots · Heritage overlay (Scheduled Monument warnings).
+slider) · Saved spots · My finds · Heritage overlay (Scheduled Monument
+warnings).
+
+**My finds** is a personal finds log: drop a pin, tap "Log find", and record
+what it is, date, depth, category, period, a photo, notes and whether it's
+recorded with the PAS. Finds show as amber dots on the map. Records are kept
+in localStorage and photos (shrunk to 1600 px JPEG) in IndexedDB, on the
+device only. Export to CSV or GPX from the Finds tab; photos are not
+exported.
 
 ## Develop
 
