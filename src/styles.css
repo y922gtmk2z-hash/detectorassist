@@ -410,3 +410,11 @@ body:not([data-screen='imagery']) [data-for='imagery'] { display: none !importan
 .hp-entry { color: var(--ink-2); }
 .leaflet-container .heritage-pop a { color: var(--moss); font-weight: 600; }
 .leaflet-popup-content { font-family: var(--font-sans); }
+
+/* First-run disclaimer */
+.disclaimer-list { margin: 12px 0; padding-left: 20px; }
+.disclaimer-list li { margin-bottom: 10px; }
+.disclaimer-list a { color: var(--moss); font-weight: 700; }
+.btn-block { width: 100%; }
+.spots-foot { margin: 16px; text-align: center; }
+.linklike { padding: 8px; border: 0; background: none; color: var(--moss); font-weight: 700; text-decoration: underline; }

@@ -94,6 +94,7 @@
             </div>
           </header>
           <ul id="spots-list" class="spots"></ul>
+          <p class="spots-foot"><button type="button" class="linklike" data-act="disclaimer">Responsible detecting</button></p>
         </section>
       </main>
 
@@ -112,6 +113,23 @@
         </button>
       </nav>
       <div id="toast" role="status" hidden></div>
+
+      <dialog id="disclaimer" class="sheet disclaimer" aria-labelledby="disclaimer-title">
+        <form method="dialog">
+          <h2 id="disclaimer-title">Before you go detecting</h2>
+          <ul class="disclaimer-list">
+            <li><strong>Always get the landowner’s permission</strong> before you detect, on every field.</li>
+            <li>Follow the <strong>Code of Practice for Responsible Metal Detecting in England and Wales</strong>.</li>
+            <li><strong>Record your finds</strong> with the
+              <a href="https://finds.org.uk/" target="_blank" rel="noopener">Portable Antiquities Scheme</a>.</li>
+          </ul>
+          <p class="sheet-note">
+            This app is a map, not legal advice. Map and heritage data can be incomplete or out of date.
+            Saved spots stay on this device; nothing is uploaded and nothing is tracked.
+          </p>
+          <button type="submit" class="btn btn-primary btn-block" autofocus>I understand</button>
+        </form>
+      </dialog>
 
       <dialog id="save-dialog" class="sheet" aria-labelledby="save-title">
         <form id="save-form" method="dialog">
